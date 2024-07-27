@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nest-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq
+      - RABBITMQ_QUEUE=tasks_queue
+    
+    depends_on:
+      - rabbitmq
+    
+
+  rabbitmq: 
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  
+
+volumes:
+  app-volume:
+  rabbitmq-data:
+
+networks:
+  app-network:
+    driver: bridge
+
+
+
